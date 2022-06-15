@@ -25,10 +25,24 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const server = http.createServer(app);
 const wss = new WebSocket.Server({server});
 
-function handleConnection (socket) {
-    console.log(socket);
+function onSocketClose()
+{
+    console.log("Disconnected form the Browser ❌");
 }
 
-wss.on("connection", handleConnection);
+function OnSocketMessage(message)
+{
+    const translatedMessageData = message.toString('utf8');
+    console.log(translatedMessageData);
+}
+
+
+wss.on("connection", (socket) => 
+{
+    console.log("Connected to Browser 👍");
+    socket.on("close", onSocketClose);
+    socket.on("message", OnSocketMessage);
+    socket.send("Hello!!!");
+});
 
 server.listen(3000, handleListen);
